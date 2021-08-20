@@ -8,7 +8,7 @@ We present a modern [GitLab API v4](https://docs.gitlab.com/ce/api/) client for 
 <a href="https://github.com/GitLabPHP/Client/actions?query=workflow%3ATests"><img src="https://img.shields.io/github/workflow/status/GitLabPHP/Client/Tests?label=Tests&style=flat-square" alt="Build Status"></img></a>
 <a href="https://github.styleci.io/repos/6816335"><img src="https://github.styleci.io/repos/6816335/shield" alt="StyleCI Status"></img></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-brightgreen?style=flat-square" alt="Software License"></img></a>
-<a href="https://packagist.org/packages/m4tthumphrey/php-gitlab-api"><img src="https://img.shields.io/packagist/dt/m4tthumphrey/php-gitlab-api?style=flat-square" alt="Packagist Downloads"></img></a>
+<a href="https://packagist.org/packages/caherrera/php-gitlab-api"><img src="https://img.shields.io/packagist/dt/caherrera/php-gitlab-api?style=flat-square" alt="Packagist Downloads"></img></a>
 <a href="https://github.com/GitLabPHP/Client/releases"><img src="https://img.shields.io/github/release/GitLabPHP/Client?style=flat-square" alt="Latest Version"></img></a>
 </p>
 
@@ -16,7 +16,7 @@ This is strongly based on [php-github-api](https://github.com/KnpLabs/php-github
 
 * [Bitbucket](https://bitbucket.org/) - [bitbucket/client](https://packagist.org/packages/bitbucket/client) by [Graham Campbell](https://github.com/GrahamCampbell).
 * [GitHub](https://github.com/) - [knplabs/github-api](https://packagist.org/packages/knplabs/github-api) by [KnpLabs](https://github.com/KnpLabs/php-github-api).
-* [GitLab](https://gitlab.com/) - [m4tthumphrey/php-gitlab-api](https://packagist.org/packages/m4tthumphrey/php-gitlab-api) which is this package!
+* [GitLab](https://gitlab.com/) - [caherrera/php-gitlab-api](https://packagist.org/packages/caherrera/php-gitlab-api) which is this package!
 
 Check out the [change log](CHANGELOG.md), [releases](https://github.com/GitLabPHP/Client/releases), [security policy](https://github.com/GitLabPHP/Client/security/policy), [license](LICENSE), [code of conduct](.github/CODE_OF_CONDUCT.md), and [contribution guidelines](.github/CONTRIBUTING.md).
 
@@ -27,16 +27,10 @@ This version supports [PHP](https://php.net) 7.1-8.0. To get started, simply req
 
 ### Standard Installation
 
-#### PHP 7.1+:
-
-```
-$ composer require m4tthumphrey/php-gitlab-api:^10.4 php-http/guzzle6-adapter:^2.0.1 http-interop/http-factory-guzzle:^1.0
-```
-
 #### PHP 7.2+:
 
 ```
-$ composer require m4tthumphrey/php-gitlab-api:^10.4 guzzlehttp/guzzle:^7.0.1 http-interop/http-factory-guzzle:^1.0
+$ composer require caherrera/php-gitlab-api:^10.5 guzzlehttp/guzzle:^7.0.1 http-interop/http-factory-guzzle:^1.0
 ```
 
 ### Framework Integration
@@ -44,7 +38,7 @@ $ composer require m4tthumphrey/php-gitlab-api:^10.4 guzzlehttp/guzzle:^7.0.1 ht
 #### Laravel 6+:
 
 ```
-$ composer require graham-campbell/gitlab:^4.4 guzzlehttp/guzzle:^7.0.1 http-interop/http-factory-guzzle:^1.0
+$ composer require caherrera/gitlab:^4.4 guzzlehttp/guzzle:^7.0.1 http-interop/http-factory-guzzle:^1.0
 ```
 
 #### Symfony 4:

@@ -32,7 +32,7 @@ abstract class AbstractModel
      */
     public function __construct()
     {
-        \trigger_deprecation('m4tthumphrey/php-gitlab-api', '10.1', 'Use of models is deprecated and %s will be removed in version 11.0.', static::class);
+        \trigger_deprecation('caherrera/php-gitlab-api', '10.1', 'Use of models is deprecated and %s will be removed in version 11.0.', static::class);
     }
 
     /**
