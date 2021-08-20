@@ -11,46 +11,46 @@ use Gitlab\Client;
 /**
  * @deprecated since version 10.1 and will be removed in 11.0.
  *
- * @property int|string            $id
- * @property string                $description
- * @property string                $default_branch
- * @property string                $visibility
- * @property string                $ssh_url_to_repo
- * @property string                $http_url_to_repo
- * @property string                $web_url
- * @property string                $readme_url
- * @property string[]              $tag_list
- * @property User|null             $owner
- * @property string                $name
- * @property string                $name_with_namespace
- * @property string                $path
- * @property string                $path_with_namespace
- * @property bool                  $issues_enabled
- * @property int                   $open_issues_count
- * @property bool                  $merge_requests_enabled
- * @property bool                  $jobs_enabled
- * @property bool                  $wiki_enabled
- * @property bool                  $snippets_enabled
- * @property bool                  $resolve_outdated_diff_discussions
- * @property bool                  $container_registry_enabled
- * @property string                $created_at
- * @property string                $last_activity_at
- * @property int                   $creator_id
+ * @property int|string $id
+ * @property string $description
+ * @property string $default_branch
+ * @property string $visibility
+ * @property string $ssh_url_to_repo
+ * @property string $http_url_to_repo
+ * @property string $web_url
+ * @property string $readme_url
+ * @property string[] $tag_list
+ * @property User|null $owner
+ * @property string $name
+ * @property string $name_with_namespace
+ * @property string $path
+ * @property string $path_with_namespace
+ * @property bool $issues_enabled
+ * @property int $open_issues_count
+ * @property bool $merge_requests_enabled
+ * @property bool $jobs_enabled
+ * @property bool $wiki_enabled
+ * @property bool $snippets_enabled
+ * @property bool $resolve_outdated_diff_discussions
+ * @property bool $container_registry_enabled
+ * @property string $created_at
+ * @property string $last_activity_at
+ * @property int $creator_id
  * @property ProjectNamespace|null $namespace
- * @property string                $import_status
- * @property bool                  $archived
- * @property string                $avatar_url
- * @property bool                  $shared_runners_enabled
- * @property int                   $forks_count
- * @property int                   $star_count
- * @property string                $runners_token
- * @property bool                  $public_jobs
- * @property Group[]|null          $shared_with_groups
- * @property bool                  $only_allow_merge_if_pipeline_succeeds
- * @property bool                  $only_allow_merge_if_all_discussions_are_resolved
- * @property bool                  $request_access_enabled
- * @property string                $merge_method
- * @property bool                  $approvals_before_merge
+ * @property string $import_status
+ * @property bool $archived
+ * @property string $avatar_url
+ * @property bool $shared_runners_enabled
+ * @property int $forks_count
+ * @property int $star_count
+ * @property string $runners_token
+ * @property bool $public_jobs
+ * @property Group[]|null $shared_with_groups
+ * @property bool $only_allow_merge_if_pipeline_succeeds
+ * @property bool $only_allow_merge_if_all_discussions_are_resolved
+ * @property bool $request_access_enabled
+ * @property string $merge_method
+ * @property bool $approvals_before_merge
  */
 final class Project extends AbstractModel
 {
@@ -101,8 +101,35 @@ final class Project extends AbstractModel
     ];
 
     /**
-     * @param Client $client
-     * @param array  $data
+     * @param  int|string|null  $id
+     * @param  Client|null  $client
+     *
+     * @return void
+     */
+    public function __construct($id = null, Client $client = null)
+    {
+        parent::__construct();
+        $this->setClient($client);
+        $this->setData('id', $id);
+    }
+
+    /**
+     * @param  Client  $client
+     * @param  string  $name
+     * @param  array  $params
+     *
+     * @return Project
+     */
+    public static function create(Client $client, string $name, array $params = [])
+    {
+        $data = $client->projects()->create($name, $params);
+
+        return self::fromArray($client, $data);
+    }
+
+    /**
+     * @param  Client  $client
+     * @param  array  $data
      *
      * @return Project
      */
@@ -135,24 +162,10 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param Client $client
-     * @param string $name
-     * @param array  $params
-     *
-     * @return Project
-     */
-    public static function create(Client $client, string $name, array $params = [])
-    {
-        $data = $client->projects()->create($name, $params);
-
-        return self::fromArray($client, $data);
-    }
-
-    /**
-     * @param int    $user_id
-     * @param Client $client
-     * @param string $name
-     * @param array  $params
+     * @param  int  $user_id
+     * @param  Client  $client
+     * @param  string  $name
+     * @param  array  $params
      *
      * @return Project
      */
@@ -161,19 +174,6 @@ final class Project extends AbstractModel
         $data = $client->projects()->createForUser($user_id, $name, $params);
 
         return self::fromArray($client, $data);
-    }
-
-    /**
-     * @param int|string|null $id
-     * @param Client|null     $client
-     *
-     * @return void
-     */
-    public function __construct($id = null, Client $client = null)
-    {
-        parent::__construct();
-        $this->setClient($client);
-        $this->setData('id', $id);
     }
 
     /**
@@ -187,7 +187,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param array $params
+     * @param  array  $params
      *
      * @return Project
      */
@@ -229,7 +229,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string|null $query
+     * @param  string|null  $query
      *
      * @return User[]
      */
@@ -246,7 +246,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $user_id
+     * @param  int  $user_id
      *
      * @return User
      */
@@ -258,8 +258,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $user_id
-     * @param int $access_level
+     * @param  int  $user_id
+     * @param  int  $access_level
      *
      * @return User
      */
@@ -271,8 +271,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $user_id
-     * @param int $access_level
+     * @param  int  $user_id
+     * @param  int  $access_level
      *
      * @return User
      */
@@ -284,7 +284,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $user_id
+     * @param  int  $user_id
      *
      * @return bool
      */
@@ -296,7 +296,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param array $parameters
+     * @param  array  $parameters
      *
      * @return ProjectHook[]
      *
@@ -315,7 +315,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      *
      * @return ProjectHook
      */
@@ -327,8 +327,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $url
-     * @param array  $events
+     * @param  string  $url
+     * @param  array  $events
      *
      * @return ProjectHook
      */
@@ -340,8 +340,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int   $hook_id
-     * @param array $params
+     * @param  int  $hook_id
+     * @param  array  $params
      *
      * @return ProjectHook
      */
@@ -353,7 +353,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $hook_id
+     * @param  int  $hook_id
      *
      * @return bool
      */
@@ -380,7 +380,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $key_id
+     * @param  int  $key_id
      *
      * @return Key
      */
@@ -392,9 +392,9 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $title
-     * @param string $key
-     * @param bool   $canPush
+     * @param  string  $title
+     * @param  string  $key
+     * @param  bool  $canPush
      *
      * @return Key
      */
@@ -406,7 +406,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $key_id
+     * @param  int  $key_id
      *
      * @return bool
      */
@@ -418,7 +418,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $key_id
+     * @param  int  $key_id
      *
      * @return bool
      */
@@ -430,8 +430,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $name
-     * @param string $ref
+     * @param  string  $name
+     * @param  string  $ref
      *
      * @return Branch
      */
@@ -443,7 +443,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $name
+     * @param  string  $name
      *
      * @return bool
      */
@@ -470,7 +470,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $branch_name
+     * @param  string  $branch_name
      *
      * @return Branch
      */
@@ -483,9 +483,9 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $branch_name
-     * @param bool   $devPush
-     * @param bool   $devMerge
+     * @param  string  $branch_name
+     * @param  bool  $devPush
+     * @param  bool  $devMerge
      *
      * @return Branch
      */
@@ -498,7 +498,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $branch_name
+     * @param  string  $branch_name
      *
      * @return Branch
      */
@@ -526,7 +526,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param array $parameters
+     * @param  array  $parameters
      *
      * @return Commit[]
      *
@@ -545,7 +545,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $sha
+     * @param  string  $sha
      *
      * @return Commit
      */
@@ -557,8 +557,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $ref
-     * @param array  $parameters
+     * @param  string  $ref
+     * @param  array  $parameters
      *
      * @return CommitNote[]
      *
@@ -577,9 +577,9 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $ref
-     * @param string $note
-     * @param array  $params
+     * @param  string  $ref
+     * @param  string  $note
+     * @param  array  $params
      *
      * @return CommitNote
      */
@@ -591,7 +591,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $sha
+     * @param  string  $sha
      *
      * @return string
      */
@@ -601,8 +601,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $from
-     * @param string $to
+     * @param  string  $from
+     * @param  string  $to
      *
      * @return Comparison
      */
@@ -614,7 +614,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param array $params
+     * @param  array  $params
      *
      * @return Node[]
      */
@@ -631,8 +631,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $sha
-     * @param string $filepath
+     * @param  string  $sha
+     * @param  string  $filepath
      *
      * @return string
      */
@@ -642,8 +642,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $sha
-     * @param string $filepath
+     * @param  string  $sha
+     * @param  string  $filepath
      *
      * @return array
      */
@@ -653,12 +653,12 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string      $file_path
-     * @param string      $content
-     * @param string      $branch_name
-     * @param string      $commit_message
-     * @param string|null $author_email
-     * @param string|null $author_name
+     * @param  string  $file_path
+     * @param  string  $content
+     * @param  string  $branch_name
+     * @param  string  $commit_message
+     * @param  string|null  $author_email
+     * @param  string|null  $author_name
      *
      * @return File
      */
@@ -671,9 +671,9 @@ final class Project extends AbstractModel
         ?string $author_name = null
     ) {
         $parameters = [
-            'file_path' => $file_path,
-            'branch' => $branch_name,
-            'content' => $content,
+            'file_path'      => $file_path,
+            'branch'         => $branch_name,
+            'content'        => $content,
             'commit_message' => $commit_message,
         ];
 
@@ -691,12 +691,12 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string      $file_path
-     * @param string      $content
-     * @param string      $branch_name
-     * @param string      $commit_message
-     * @param string|null $author_email
-     * @param string|null $author_name
+     * @param  string  $file_path
+     * @param  string  $content
+     * @param  string  $branch_name
+     * @param  string  $commit_message
+     * @param  string|null  $author_email
+     * @param  string|null  $author_name
      *
      * @return File
      */
@@ -709,9 +709,9 @@ final class Project extends AbstractModel
         ?string $author_name = null
     ) {
         $parameters = [
-            'file_path' => $file_path,
-            'branch' => $branch_name,
-            'content' => $content,
+            'file_path'      => $file_path,
+            'branch'         => $branch_name,
+            'content'        => $content,
             'commit_message' => $commit_message,
         ];
 
@@ -729,19 +729,19 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string      $file_path
-     * @param string      $branch_name
-     * @param string      $commit_message
-     * @param string|null $author_email
-     * @param string|null $author_name
+     * @param  string  $file_path
+     * @param  string  $branch_name
+     * @param  string  $commit_message
+     * @param  string|null  $author_email
+     * @param  string|null  $author_name
      *
      * @return bool
      */
     public function deleteFile(string $file_path, string $branch_name, string $commit_message, ?string $author_email = null, ?string $author_name = null)
     {
         $parameters = [
-            'file_path' => $file_path,
-            'branch' => $branch_name,
+            'file_path'      => $file_path,
+            'branch'         => $branch_name,
             'commit_message' => $commit_message,
         ];
 
@@ -759,7 +759,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param array $parameters
+     * @param  array  $parameters
      *
      * @return Event[]
      *
@@ -778,7 +778,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param array $parameters
+     * @param  array  $parameters
      *
      * @return MergeRequest[]
      *
@@ -797,7 +797,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      *
      * @return MergeRequest
      */
@@ -809,16 +809,16 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $source
-     * @param string $target
-     * @param string $title
-     * @param array  $parameters {
-     *
-     *     @var int    $assignee
-     *     @var string $description
-     * }
+     * @param  string  $source
+     * @param  string  $target
+     * @param  string  $title
+     * @param  array  $parameters  {
      *
      * @return MergeRequest
+     * @var string $description
+     * }
+     *
+     * @var int $assignee
      */
     public function createMergeRequest(string $source, string $target, string $title, array $parameters = [])
     {
@@ -836,8 +836,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int   $id
-     * @param array $params
+     * @param  int  $id
+     * @param  array  $params
      *
      * @return MergeRequest
      */
@@ -849,7 +849,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      *
      * @return MergeRequest
      */
@@ -861,7 +861,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      *
      * @return MergeRequest
      */
@@ -873,7 +873,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      *
      * @return MergeRequest
      */
@@ -885,7 +885,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param array $parameters
+     * @param  array  $parameters
      *
      * @return Issue[]
      *
@@ -904,21 +904,21 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $title
-     * @param array  $params
+     * @param  string  $title
+     * @param  array  $params
      *
      * @return Issue
      */
     public function createIssue(string $title, array $params = [])
     {
         $params['title'] = $title;
-        $data = $this->client->issues()->create($this->id, $params);
+        $data            = $this->client->issues()->create($this->id, $params);
 
         return Issue::fromArray($this->getClient(), $this, $data);
     }
 
     /**
-     * @param int $iid
+     * @param  int  $iid
      *
      * @return Issue
      */
@@ -930,8 +930,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int   $iid
-     * @param array $params
+     * @param  int  $iid
+     * @param  array  $params
      *
      * @return Issue
      */
@@ -943,8 +943,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int         $iid
-     * @param string|null $comment
+     * @param  int  $iid
+     * @param  string|null  $comment
      *
      * @return Issue
      */
@@ -956,7 +956,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $iid
+     * @param  int  $iid
      *
      * @return Issue
      */
@@ -968,7 +968,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param array $parameters
+     * @param  array  $parameters
      *
      * @return Milestone[]
      *
@@ -987,21 +987,21 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $title
-     * @param array  $params
+     * @param  string  $title
+     * @param  array  $params
      *
      * @return Milestone
      */
     public function createMilestone(string $title, array $params = [])
     {
         $params['title'] = $title;
-        $data = $this->client->milestones()->create($this->id, $params);
+        $data            = $this->client->milestones()->create($this->id, $params);
 
         return Milestone::fromArray($this->getClient(), $this, $data);
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      *
      * @return Milestone
      */
@@ -1013,8 +1013,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int   $id
-     * @param array $params
+     * @param  int  $id
+     * @param  array  $params
      *
      * @return Milestone
      */
@@ -1026,7 +1026,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      *
      * @return Issue[]
      */
@@ -1053,10 +1053,10 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $title
-     * @param string $filename
-     * @param string $code
-     * @param string $visibility
+     * @param  string  $title
+     * @param  string  $filename
+     * @param  string  $code
+     * @param  string  $visibility
      *
      * @return Snippet
      */
@@ -1068,7 +1068,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      *
      * @return Snippet
      */
@@ -1080,7 +1080,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      *
      * @return string
      */
@@ -1092,8 +1092,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int   $id
-     * @param array $params
+     * @param  int  $id
+     * @param  array  $params
      *
      * @return Snippet
      */
@@ -1105,7 +1105,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      *
      * @return bool
      */
@@ -1117,7 +1117,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $group_id
+     * @param  int  $group_id
      *
      * @return Group
      */
@@ -1129,7 +1129,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      *
      * @return Project
      */
@@ -1141,7 +1141,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      *
      * @return Project
      */
@@ -1151,7 +1151,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      *
      * @return Project
      */
@@ -1173,8 +1173,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $service_name
-     * @param array  $params
+     * @param  string  $service_name
+     * @param  array  $params
      *
      * @return bool
      */
@@ -1186,7 +1186,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $service_name
+     * @param  string  $service_name
      *
      * @return bool
      */
@@ -1213,15 +1213,15 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $name
-     * @param string $color
+     * @param  string  $name
+     * @param  string  $color
      *
      * @return Label
      */
     public function addLabel(string $name, string $color)
     {
         $data = $this->client->projects()->addLabel($this->id, [
-            'name' => $name,
+            'name'  => $name,
             'color' => $color,
         ]);
 
@@ -1229,8 +1229,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $name
-     * @param array  $params
+     * @param  string  $name
+     * @param  array  $params
      *
      * @return Label
      */
@@ -1248,7 +1248,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $name
+     * @param  string  $name
      *
      * @return bool
      */
@@ -1290,7 +1290,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      *
      * @return Trigger
      */
@@ -1302,7 +1302,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param string $description
+     * @param  string  $description
      *
      * @return Trigger
      */
@@ -1314,7 +1314,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      *
      * @return Pipeline
      */
@@ -1326,11 +1326,13 @@ final class Project extends AbstractModel
     }
 
     /**
+     * @param  array  $parameters
+     *
      * @return Pipeline[]
      */
-    public function pipelines()
+    public function pipelines(array $parameters = [])
     {
-        $data = $this->client->projects()->pipelines($this->id);
+        $data = $this->client->projects()->pipelines($this->id, $parameters);
 
         $pipelines = [];
         foreach ($data as $pipelineData) {
@@ -1341,7 +1343,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param array $scopes
+     * @param  array  $scopes
      *
      * @return Job[]
      */
@@ -1358,8 +1360,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int   $pipeline_id
-     * @param array $scopes
+     * @param  int  $pipeline_id
+     * @param  array  $scopes
      *
      * @return Job[]
      */
@@ -1376,7 +1378,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $job_id
+     * @param  int  $job_id
      *
      * @return Job
      */
@@ -1403,7 +1405,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param array $params
+     * @param  array  $params
      *
      * @return Badge
      */
@@ -1415,8 +1417,8 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int   $badge_id
-     * @param array $params
+     * @param  int  $badge_id
+     * @param  array  $params
      *
      * @return Badge
      */
@@ -1430,7 +1432,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param int $badge_id
+     * @param  int  $badge_id
      *
      * @return bool
      */
@@ -1442,7 +1444,7 @@ final class Project extends AbstractModel
     }
 
     /**
-     * @param array $params
+     * @param  array  $params
      *
      * @return Branch
      */
