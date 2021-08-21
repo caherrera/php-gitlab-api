@@ -9,20 +9,20 @@ use Gitlab\Client;
 /**
  * @deprecated since version 10.1 and will be removed in 11.0.
  *
- * @property int        $id
- * @property string     $ref
- * @property string     $sha
- * @property string     $status
- * @property Project    $project
+ * @property int $id
+ * @property string $ref
+ * @property string $sha
+ * @property string $status
+ * @property Project $project
  * @property array|null $variables
- * @property string     $created_at
- * @property string     $updated_at
- * @property string     $started_at
- * @property string     $finished_at
- * @property string     $committed_at
- * @property int        $duration
- * @property string     $web_url
- * @property User|null  $user
+ * @property string $created_at
+ * @property string $updated_at
+ * @property string $started_at
+ * @property string $finished_at
+ * @property string $committed_at
+ * @property int $duration
+ * @property string $web_url
+ * @property User|null $user
  */
 final class Pipeline extends AbstractModel
 {
@@ -35,6 +35,7 @@ final class Pipeline extends AbstractModel
         'sha',
         'status',
         'project',
+        'jobs',
         'variables',
         'created_at',
         'updated_at',
@@ -47,9 +48,37 @@ final class Pipeline extends AbstractModel
     ];
 
     /**
-     * @param Client  $client
-     * @param Project $project
-     * @param array   $data
+     * @param  Project  $project
+     * @param  int|null  $id
+     * @param  Client|null  $client
+     *
+     * @return void
+     */
+    public function __construct(Project $project, ?int $id = null, Client $client = null)
+    {
+        parent::__construct();
+        $this->setClient($client);
+        $this->setData('project', $project);
+        $this->setData('id', $id);
+    }
+
+    /**
+     * @return Pipeline
+     */
+    public function show()
+    {
+        $projectsApi = $this->client->projects();
+
+        $data              = $projectsApi->pipeline($this->project->id, $this->id);
+        $data['variables'] = $projectsApi->pipelineVariables($this->project->id, $this->id);
+
+        return self::fromArray($this->client, $this->project, $data);
+    }
+
+    /**
+     * @param  Client  $client
+     * @param  Project  $project
+     * @param  array  $data
      *
      * @return Pipeline
      */
@@ -72,31 +101,12 @@ final class Pipeline extends AbstractModel
         return $pipeline->hydrate($data);
     }
 
-    /**
-     * @param Project     $project
-     * @param int|null    $id
-     * @param Client|null $client
-     *
-     * @return void
-     */
-    public function __construct(Project $project, ?int $id = null, Client $client = null)
+    public function jobs()
     {
-        parent::__construct();
-        $this->setClient($client);
-        $this->setData('project', $project);
-        $this->setData('id', $id);
-    }
+        if ( ! isset($this->data['jobs'])) {
+            $this->setData('jobs', $this->project->pipelineJobs($this->id));
+        }
 
-    /**
-     * @return Pipeline
-     */
-    public function show()
-    {
-        $projectsApi = $this->client->projects();
-
-        $data = $projectsApi->pipeline($this->project->id, $this->id);
-        $data['variables'] = $projectsApi->pipelineVariables($this->project->id, $this->id);
-
-        return self::fromArray($this->client, $this->project, $data);
+        return $this->data['jobs'];
     }
 }
