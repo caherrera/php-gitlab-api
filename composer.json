@@ -3,6 +3,9 @@
     "description": "GitLab API v4 client for PHP",
     "keywords": ["gitlab", "api"],
     "license": "MIT",
+    "replace": {
+        "m4tthumphrey/php-gitlab-api": "10.*"
+    },
     "authors": [
         {
             "name": "Carlos Herrera",
