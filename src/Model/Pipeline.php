@@ -104,7 +104,7 @@ final class Pipeline extends AbstractModel
     public function jobs()
     {
         if ( ! isset($this->data['jobs'])) {
-            $this->setData('jobs', $this->project->pipelineJobs($this->id));
+            $this->setData('jobs', $this->project->pipelineJobs($this->id) ?? []);
         }
 
         return $this->data['jobs'];
