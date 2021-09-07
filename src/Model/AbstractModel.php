@@ -36,28 +36,6 @@ abstract class AbstractModel
     }
 
     /**
-     * @return Client
-     */
-    public function getClient()
-    {
-        return $this->client;
-    }
-
-    /**
-     * @param  Client|null  $client
-     *
-     * @return $this
-     */
-    public function setClient(Client $client = null)
-    {
-        if (null !== $client) {
-            $this->client = $client;
-        }
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function getData()
@@ -125,7 +103,29 @@ abstract class AbstractModel
 
     public function __serialize()
     {
-        return $this->data;
+        return ['data' => $this->data, 'client' => $this->getClient()];
+    }
+
+    /**
+     * @return Client
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * @param  Client|null  $client
+     *
+     * @return $this
+     */
+    public function setClient(Client $client = null)
+    {
+        if (null !== $client) {
+            $this->client = $client;
+        }
+
+        return $this;
     }
 
     public function __unserialize($data)
