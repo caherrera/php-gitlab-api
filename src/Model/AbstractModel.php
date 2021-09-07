@@ -103,7 +103,7 @@ abstract class AbstractModel
 
     public function __serialize()
     {
-        return ['data' => $this->data, 'client' => $this->getClient()];
+        return $this->data;
     }
 
     /**
