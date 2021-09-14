@@ -51,6 +51,7 @@ use Gitlab\Client;
  * @property bool                  $request_access_enabled
  * @property string                $merge_method
  * @property bool                  $approvals_before_merge
+ * @property bool                  $empty_repo
  */
 final class Project extends AbstractModel
 {
@@ -98,6 +99,7 @@ final class Project extends AbstractModel
         'request_access_enabled',
         'merge_method',
         'approvals_before_merge',
+        'empty_repo'
     ];
 
     /**
