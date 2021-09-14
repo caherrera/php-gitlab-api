@@ -49,8 +49,8 @@ final class ResultPager implements ResultPagerInterface
     /**
      * Create a new result pager instance.
      *
-     * @param Client   $client
-     * @param int|null $perPage
+     * @param  Client  $client
+     * @param  int|null  $perPage
      *
      * @return void
      */
@@ -60,45 +60,21 @@ final class ResultPager implements ResultPagerInterface
             throw new ValueError(\sprintf('%s::__construct(): Argument #2 ($perPage) must be greater than 1, or null', self::class));
         }
 
-        $this->client = $client;
-        $this->perPage = $perPage ?? self::PER_PAGE;
+        $this->client     = $client;
+        $this->perPage    = $perPage ?? self::PER_PAGE;
         $this->pagination = [];
-    }
-
-    /**
-     * Fetch a single result from an api call.
-     *
-     * @param ApiInterface $api
-     * @param string       $method
-     * @param array        $parameters
-     *
-     * @throws \Http\Client\Exception
-     *
-     * @return array
-     */
-    public function fetch(ApiInterface $api, string $method, array $parameters = [])
-    {
-        $result = $api->perPage($this->perPage)->$method(...$parameters);
-
-        if (!\is_array($result)) {
-            throw new RuntimeException('Pagination of this endpoint is not supported.');
-        }
-
-        $this->postFetch();
-
-        return $result;
     }
 
     /**
      * Fetch all results from an api call.
      *
-     * @param ApiInterface $api
-     * @param string       $method
-     * @param array        $parameters
-     *
-     * @throws \Http\Client\Exception
+     * @param  ApiInterface  $api
+     * @param  string  $method
+     * @param  array  $parameters
      *
      * @return array
+     * @throws \Http\Client\Exception
+     *
      */
     public function fetchAll(ApiInterface $api, string $method, array $parameters = [])
     {
@@ -108,95 +84,57 @@ final class ResultPager implements ResultPagerInterface
     /**
      * Lazily fetch all results from an api call.
      *
-     * @param ApiInterface $api
-     * @param string       $method
-     * @param array        $parameters
-     *
-     * @throws \Http\Client\Exception
+     * @param  ApiInterface  $api
+     * @param  string  $method
+     * @param  array  $parameters
      *
      * @return \Generator
+     * @throws \Http\Client\Exception
+     *
      */
     public function fetchAllLazy(ApiInterface $api, string $method, array $parameters = [])
     {
+        static $num_request_per_minute = 0;
         /** @var mixed $value */
         foreach ($this->fetch($api, $method, $parameters) as $value) {
             yield $value;
         }
+        $num_request_per_minute++;
 
         while ($this->hasNext()) {
             /** @var mixed $value */
             foreach ($this->fetchNext() as $value) {
                 yield $value;
             }
+            $num_request_per_minute++;
+            if ($num_request_per_minute > 5) {
+                sleep(60);
+            }
         }
     }
 
     /**
-     * Check to determine the availability of a next page.
+     * Fetch a single result from an api call.
      *
-     * @return bool
-     */
-    public function hasNext()
-    {
-        return isset($this->pagination['next']);
-    }
-
-    /**
-     * Fetch the next page.
-     *
-     * @throws \Http\Client\Exception
+     * @param  ApiInterface  $api
+     * @param  string  $method
+     * @param  array  $parameters
      *
      * @return array
-     */
-    public function fetchNext()
-    {
-        return $this->get('next');
-    }
-
-    /**
-     * Check to determine the availability of a previous page.
-     *
-     * @return bool
-     */
-    public function hasPrevious()
-    {
-        return isset($this->pagination['prev']);
-    }
-
-    /**
-     * Fetch the previous page.
-     *
      * @throws \Http\Client\Exception
      *
-     * @return array
      */
-    public function fetchPrevious()
+    public function fetch(ApiInterface $api, string $method, array $parameters = [])
     {
-        return $this->get('prev');
-    }
+        $result = $api->perPage($this->perPage)->$method(...$parameters);
 
-    /**
-     * Fetch the first page.
-     *
-     * @throws \Http\Client\Exception
-     *
-     * @return array
-     */
-    public function fetchFirst()
-    {
-        return $this->get('first');
-    }
+        if ( ! \is_array($result)) {
+            throw new RuntimeException('Pagination of this endpoint is not supported.');
+        }
 
-    /**
-     * Fetch the last page.
-     *
-     * @throws \Http\Client\Exception
-     *
-     * @return array
-     */
-    public function fetchLast()
-    {
-        return $this->get('last');
+        $this->postFetch();
+
+        return $result;
     }
 
     /**
@@ -212,11 +150,33 @@ final class ResultPager implements ResultPagerInterface
     }
 
     /**
-     * @param string $key
+     * Check to determine the availability of a next page.
      *
-     * @throws \Http\Client\Exception
+     * @return bool
+     */
+    public function hasNext()
+    {
+        return isset($this->pagination['next']);
+    }
+
+    /**
+     * Fetch the next page.
      *
      * @return array
+     * @throws \Http\Client\Exception
+     *
+     */
+    public function fetchNext()
+    {
+        return $this->get('next');
+    }
+
+    /**
+     * @param  string  $key
+     *
+     * @return array
+     * @throws \Http\Client\Exception
+     *
      */
     private function get(string $key)
     {
@@ -230,12 +190,58 @@ final class ResultPager implements ResultPagerInterface
 
         $content = ResponseMediator::getContent($result);
 
-        if (!\is_array($content)) {
+        if ( ! \is_array($content)) {
             throw new RuntimeException('Pagination of this endpoint is not supported.');
         }
 
         $this->postFetch();
 
         return $content;
+    }
+
+    /**
+     * Check to determine the availability of a previous page.
+     *
+     * @return bool
+     */
+    public function hasPrevious()
+    {
+        return isset($this->pagination['prev']);
+    }
+
+    /**
+     * Fetch the previous page.
+     *
+     * @return array
+     * @throws \Http\Client\Exception
+     *
+     */
+    public function fetchPrevious()
+    {
+        return $this->get('prev');
+    }
+
+    /**
+     * Fetch the first page.
+     *
+     * @return array
+     * @throws \Http\Client\Exception
+     *
+     */
+    public function fetchFirst()
+    {
+        return $this->get('first');
+    }
+
+    /**
+     * Fetch the last page.
+     *
+     * @return array
+     * @throws \Http\Client\Exception
+     *
+     */
+    public function fetchLast()
+    {
+        return $this->get('last');
     }
 }
