@@ -49,7 +49,7 @@ final class GitlabDelayRequest implements Plugin
         if (count($this->lastRequest) < 5) {
             $this->lastRequest[] = new DateTime();
         } else {
-            $diff              = ($this->lastRequest[0]->diff($this->lastRequest[count($this->lastRequest) - 1]))->i;
+            $diff              = ($this->lastRequest[0]->diff($this->lastRequest[count($this->lastRequest) - 1]))->s;
             $sleep             = 60 - $diff + 1;
             $this->lastRequest = [];
             sleep($sleep ?? 0);
