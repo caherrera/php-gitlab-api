@@ -52,7 +52,9 @@ final class GitlabDelayRequest implements Plugin
         if ($this->requestsPerMinute < 5) {
             $this->requestsPerMinute++;
         } else {
-            sleep(60);
+            $diff  = ($this->lastRequest[0]->diff($this->lastRequest[count($this->lastRequest) - 1]))->i;
+            $sleep = 60 - $diff + 1;
+            sleep($sleep ?? 0);
             $this->requestsPerMinute = 0;
             $this->lastRequest       = [];
         }
