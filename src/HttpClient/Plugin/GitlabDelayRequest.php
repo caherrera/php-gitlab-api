@@ -19,13 +19,11 @@ use Psr\Http\Message\ResponseInterface;
  */
 final class GitlabDelayRequest implements Plugin
 {
-    private $requestsPerMinute;
     private $lastRequest;
 
     public function __construct()
     {
-        $this->requestsPerMinute = 0;
-        $this->lastRequest[]     = new DateTime();
+        $this->lastRequest = [];
     }
 
     /**
@@ -48,15 +46,13 @@ final class GitlabDelayRequest implements Plugin
 
     private function countRequest()
     {
-        $this->lastRequest[] = new DateTime();
-        if ($this->requestsPerMinute < 5) {
-            $this->requestsPerMinute++;
+        if (count($this->lastRequest) < 5) {
+            $this->lastRequest[] = new DateTime();
         } else {
-            $diff  = ($this->lastRequest[0]->diff($this->lastRequest[count($this->lastRequest) - 1]))->i;
-            $sleep = 60 - $diff + 1;
+            $diff              = ($this->lastRequest[0]->diff($this->lastRequest[count($this->lastRequest) - 1]))->i;
+            $sleep             = 60 - $diff + 1;
+            $this->lastRequest = [];
             sleep($sleep ?? 0);
-            $this->requestsPerMinute = 0;
-            $this->lastRequest       = [];
         }
     }
 }
