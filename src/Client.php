@@ -31,6 +31,7 @@ use Gitlab\Api\Version;
 use Gitlab\Api\Wiki;
 use Gitlab\HttpClient\Builder;
 use Gitlab\HttpClient\Plugin\Authentication;
+use Gitlab\HttpClient\Plugin\GitlabDelayRequest;
 use Gitlab\HttpClient\Plugin\GitlabExceptionThrower;
 use Gitlab\HttpClient\Plugin\History;
 use Http\Client\Common\HttpMethodsClientInterface;
@@ -109,6 +110,8 @@ class Client
             'User-Agent' => self::USER_AGENT,
         ]));
         $builder->addPlugin(new RedirectPlugin());
+        $builder->addPlugin(new GitlabDelayRequest());
+
 
         $this->setUrl(self::BASE_URL);
     }
